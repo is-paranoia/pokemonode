@@ -1,0 +1,23 @@
+version: '3'
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+    ports:
+      - "3000:3000"
+    working_dir: /app/frontend
+    command: ["npm", "start"]
+
+  server:
+    build:
+      context: .
+      dockerfile: server/Dockerfile
+    ports:
+      - "8080:8080"
+    working_dir: /app/server
+    command: ["npm", "start"]
+
+volumes:
+  frontend:
+  server:
