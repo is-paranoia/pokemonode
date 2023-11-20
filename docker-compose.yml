@@ -8,6 +8,11 @@ services:
       - "3000:3000"
     working_dir: /app/frontend
     command: ["npm", "start"]
+    env_file:
+      - .env
+    depends_on:
+      redis:
+        condition: service_started
 
   server:
     build:
@@ -17,7 +22,16 @@ services:
       - "8080:8080"
     working_dir: /app/server
     command: ["npm", "start"]
+    env_file:
+      - .env
+    depends_on:
+      redis:
+        condition: service_started
 
-volumes:
-  frontend:
-  server:
+  redis:
+    image: redis
+    command: --port 4501
+    ports:
+      - "4501:4501"
+    env_file:
+    - .env
