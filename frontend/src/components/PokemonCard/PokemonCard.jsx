@@ -1,4 +1,3 @@
-'use client';
 import { Card, CardActionArea, CardContent, CardHeader, CardMedia } from "@mui/material";
 import { useEffect, useState } from "react";
 
