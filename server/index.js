@@ -30,7 +30,7 @@ app.get("/", (req, res) => {
 
 app.get("/pokemons", async (req, res) => {
     const {page} = req.query
-    const offset = 10 * page
+    const offset = 10 * (page-1)
     const limit = 10
     const pokemonsCacheKey = `pokemons-${offset}-${limit}`
     console.log(pokemonsCacheKey);
@@ -78,6 +78,34 @@ app.get("/pokemons", async (req, res) => {
             await REDIS.expire(pokemonsCacheKey, 60)
         }
         res.status(200).json({count: pokemonsJson.count, pokemons: pokemonsFilled})
+    } catch {
+        res.sendStatus(500);
+    }
+});
+
+app.get("/search", async (req, res) => {
+    const {name} = req.query
+
+    try {
+        const pokemonRaw = await fetch(`https://pokeapi.co/api/v2/pokemon/${name}`)
+        const pokemonJson = await pokemonRaw.json()
+
+        //const pokemons = pokemonsJson.results ?? []
+
+        // const pokemonsFilled = await Promise.all(pokemons.map(async (pokemon) => {
+        //     const pokemonDetailsRaw = await fetch(pokemon.url)
+        //     const pokemonsDetailsJson = await pokemonDetailsRaw.json()
+        //     const pokemonDetails = pokemonsDetailsJson ?? {}
+
+        //     const {id, height, abilities} = pokemonDetails
+        //     const image = pokemonDetails.sprites?.front_default ?? ''
+
+        //     return {...pokemon, id, height, abilities, image}
+        // }))
+
+        //console.log('pokemonsFilled', pokemonsFilled[0]);
+
+        res.status(200).json(pokemonJson)
     } catch {
         res.sendStatus(500);
     }
