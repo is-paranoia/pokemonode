@@ -1,3 +1,12 @@
+.pokemonsPaginated {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 750px;
+    width: 100%;
+    overflow: scroll;
+}
+
 .pokemonsList {
     display: flex;
     gap: 24px;
@@ -5,4 +14,15 @@
     flex-wrap: wrap;
     margin: 24px 0 24px 0;
     justify-content: center;
+}
+
+.paginationBlock {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: sticky;
+    bottom: 16px;
+    padding: 4px;
+    border-radius: 4px;
+    background-color: #f3f3f3;
 }

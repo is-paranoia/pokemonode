@@ -14,9 +14,9 @@ const REDIS = redis.createClient({
 REDIS.on('error', (err) => console.log('Redis Client Error', err));
 await REDIS.connect();
 
-import Knex from 'knex';
+import knex from 'knex';
 import configs from './knexfile.js';
-export const db = Knex(configs);
+export const db = knex(configs);
 
 const app = express();
 const port = process.env.MAIN_SERVER_PORT;
@@ -29,8 +29,11 @@ app.get("/", (req, res) => {
 });
 
 app.get("/pokemons", async (req, res) => {
-    const {offset, limit} = req.query
+    const {page} = req.query
+    const offset = 10 * page
+    const limit = 10
     const pokemonsCacheKey = `pokemons-${offset}-${limit}`
+    console.log(pokemonsCacheKey);
 
     try {
         console.log('req', req.query); // тут запилить по пользователю
@@ -69,12 +72,12 @@ app.get("/pokemons", async (req, res) => {
             console.log('CREATE cachedPokemons');
             await REDIS.set(
                 pokemonsCacheKey, 
-                JSON.stringify(pokemonsFilled),
+                JSON.stringify({count: pokemonsJson.count, pokemons: pokemonsFilled}),
                 'EX', 60
             );
             await REDIS.expire(pokemonsCacheKey, 60)
         }
-        res.send(pokemonsFilled)
+        res.status(200).json({count: pokemonsJson.count, pokemons: pokemonsFilled})
     } catch {
         res.sendStatus(500);
     }
