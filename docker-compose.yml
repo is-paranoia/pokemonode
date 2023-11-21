@@ -5,7 +5,7 @@ services:
       context: .
       dockerfile: frontend/Dockerfile
     ports:
-      - "3000:3000"
+      - "${FRONTEND_PORT}:${FRONTEND_PORT}"
     working_dir: /app/frontend
     command: ["npm", "start"]
     env_file:
@@ -13,13 +13,15 @@ services:
     depends_on:
       redis:
         condition: service_started
+      postgres:
+        condition: service_healthy
 
   server:
     build:
       context: .
       dockerfile: server/Dockerfile
     ports:
-      - "8080:8080"
+      - "${MAIN_SERVER_PORT}:${MAIN_SERVER_PORT}"
     working_dir: /app/server
     command: ["npm", "start"]
     env_file:
@@ -27,11 +29,35 @@ services:
     depends_on:
       redis:
         condition: service_started
+      postgres:
+        condition: service_healthy
 
   redis:
     image: redis
-    command: --port 4501
+    command: --port ${REDIS_PORT}
     ports:
-      - "4501:4501"
+      - "${REDIS_PORT}:${REDIS_PORT}"
     env_file:
-    - .env
+      - .env
+
+  postgres:
+    image: postgres:13.3
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    healthcheck:
+      test: ["CMD-SHELL", "PGUSER=${DB_USER}", "pg_isready"]
+      interval: 1s
+      timeout: 10s
+      retries: 5
+    volumes:  # Persist the db data
+      - database-data:/var/lib/postgresql/data
+    ports:
+      - "${DB_PORT}:${DB_PORT}"
+    env_file:
+      - .env
+    command: -p ${DB_PORT}
+
+volumes:
+  database-data:

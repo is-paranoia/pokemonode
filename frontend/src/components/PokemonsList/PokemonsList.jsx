@@ -1,4 +1,3 @@
-'use client';
 import { Card, Skeleton } from "@mui/material";
 import { useEffect, useState } from "react";
 import "./PokemonsList.scss";

@@ -2,6 +2,8 @@ import 'dotenv/config';
 import express from "express";
 import cors from "cors";
 import redis from 'redis';
+import jwt from 'jsonwebtoken';
+import bcrypt from 'bcryptjs';
 
 const REDIS = redis.createClient({
     socket: {
@@ -12,15 +14,15 @@ const REDIS = redis.createClient({
 REDIS.on('error', (err) => console.log('Redis Client Error', err));
 await REDIS.connect();
 
+import Knex from 'knex';
+import configs from './knexfile.js';
+export const db = Knex(configs);
+
 const app = express();
 const port = process.env.MAIN_SERVER_PORT;
 
 app.use(express.json());
 app.use(cors())
-
-app.post("/blog", (req, res) => {
-    //create new blog post
-});
 
 app.get("/", (req, res) => {
     res.send("Api running");
@@ -86,6 +88,71 @@ app.get("/last", async (req, res) => {
         res.send(JSON.parse(checkRedis))
     } catch {
         res.sendStatus(500);
+    }
+});
+
+app.post("/register", async (req, res) => {
+    const data = req.body
+
+    const {
+        name,
+        email,
+        password
+    } = data
+
+    try {
+        if (name && email && password) {
+            const hashedPassword = await bcrypt.hash(password, 10);
+            const token = jwt.sign({name, hashedPassword}, process.env.SECRET);
+            
+            console.log('data', data);
+            console.log('hashedPassword', hashedPassword);
+            console.log('jwt', token);
+
+            // Insert user into the database
+            await db('users').insert({
+                name,
+                email,
+                password: hashedPassword
+            });
+            res.status(201).json({message: 'Registered', registered: true});
+        }
+    } catch {
+        res.status(500).json({message: 'Registration failed', registered: false});
+    }
+});
+
+app.post("/login", async (req, res) => {
+    const data = req.body
+    const {
+        name,
+        password
+    } = data
+
+    try {
+      // Retrieve the user from the database
+      const user = await db('users').where({name}).first();
+  
+      // Check if the user exists
+      if (!user) {
+        return res.status(401).json({ message: 'Invalid username or password' });
+      }
+
+      // Compare the provided password with the hashed password in the database
+      const passwordMatch = await bcrypt.compare(password, user.password);
+  
+      // Check if the passwords match
+      if (!passwordMatch) {
+        return res.status(401).json({ message: 'Invalid username or password' });
+      }
+  
+      // Passwords match, user is authenticated
+      const {id} = user;
+      const token = jwt.sign({id, name}, process.env.SECRET, {expiresIn: '1h'});
+      res.header('Authorization', `Bearer ${token}`);
+      res.status(200).json({message: 'Login successful', id, name, token});
+    } catch (error) {
+      res.status(500).json({message: 'Internal Server Error'});
     }
 });
 
