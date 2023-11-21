@@ -8,10 +8,19 @@ const SearchPokemon = (props) => {
     const [searchText, setSearchText] = useState('');
 
     useEffect(() => {
-        setIsLoading(true);
+      setIsLoading(true);
 
-        console.log('searchText', searchText);
-        setIsLoading(false)
+      console.log('searchText', searchText);
+      try {
+        fetch(`http://localhost:8080/search?name=${searchText}`)
+        .then((response) => response.json())
+        .then((result) => {
+          console.log('SEARCH', result);
+          setIsLoading(false)
+        })
+      } catch {
+        console.log('error fetch');
+      }
     }, [searchText]);
 
 
