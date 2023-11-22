@@ -1,5 +1,6 @@
 import { Card, CardActionArea, CardContent, CardHeader, CardMedia } from "@mui/material";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const PokemonCard = (props) => {
     const {pokemon} = props
@@ -11,11 +12,16 @@ const PokemonCard = (props) => {
         image
     } = pokemon
 
+    const navigate = useNavigate();
     console.log(image);
     //const [pokemons, setPokemons] = useState([]);
 
+    const handleCardClick = () => {
+        navigate(`/pokemon/${id}`);
+    }
+
     return (
-        <Card key={id} sx={{width: '200px', height: '350px'}}>
+        <Card key={id} sx={{width: '200px', height: '350px'}} onClick={handleCardClick}>
             <CardHeader title={name} />
             <CardMedia
                 component={"img"}
