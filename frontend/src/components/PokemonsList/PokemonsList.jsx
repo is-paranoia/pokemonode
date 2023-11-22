@@ -19,7 +19,7 @@ const PokemonsList = (props) => {
         setIsLoading(true);
 
         try {
-            fetch(`http://localhost:8080/pokemons?page=${page}`)
+            fetch(`http://localhost:8080/pokemon/list?page=${page}`)
             .then((response) => response.json())
             .then((result) => {
                 const {

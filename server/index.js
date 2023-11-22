@@ -28,7 +28,7 @@ app.get("/", (req, res) => {
     res.send("Api running");
 });
 
-app.get("/pokemons", async (req, res) => {
+app.get("/pokemon/list", async (req, res) => {
     const {page} = req.query
     const offset = 10 * (page-1)
     const limit = 10
@@ -84,10 +84,10 @@ app.get("/pokemons", async (req, res) => {
 });
 
 app.get("/search", async (req, res) => {
-    const {name} = req.query
+    const {id, name} = req.query
 
     try {
-        const pokemonRaw = await fetch(`https://pokeapi.co/api/v2/pokemon/${name}`)
+        const pokemonRaw = await fetch(`https://pokeapi.co/api/v2/pokemon/${id || name}`)
         const pokemonJson = await pokemonRaw.json()
 
         //const pokemons = pokemonsJson.results ?? []
