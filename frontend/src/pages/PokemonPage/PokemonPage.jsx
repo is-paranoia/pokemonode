@@ -27,7 +27,7 @@ const PokemonPage = () => {
   }, [params.id]);
 
   const onButtonClick = () => {
-    navigate(`/fight`);
+    navigate(`/fight/${params.id}`);
   }
 
   return (
