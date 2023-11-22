@@ -1,6 +1,6 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import {Header, PokemonsList} from '@components';
-import {LoginPage, RegisterPage, PokemonPage} from '@pages';
+import {LoginPage, RegisterPage, PokemonPage, FightPage} from '@pages';
 import { Provider } from 'mobx-react';
 import authStore from '@stores/AuthStore';
 import './App.css';
@@ -17,7 +17,7 @@ const App = () => {
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/pokemon/:id" element={<PokemonPage />} />
-            {authStore.isAuthenticated && <Route path="/fight" element={<PokemonPage />} />}
+            <Route path="/fight/:pokemonId" element={<FightPage />} />
           </Routes>
         </BrowserRouter>
       </div>

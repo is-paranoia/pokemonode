@@ -83,6 +83,96 @@ app.get("/pokemon/list", async (req, res) => {
     }
 });
 
+app.get("/fight", async (req, res) => {
+    const {left, right} = req.query
+    console.log('left right', left, right);
+
+    try {
+        const pokemonLeft = async () => {
+            const pokemonLeftRaw = await fetch(`https://pokeapi.co/api/v2/pokemon/${left}`)
+            const pokemonLeftJson = await pokemonLeftRaw.json()
+            const {id, height, abilities} = pokemonLeftJson
+            const image = pokemonLeftJson.sprites?.front_default ?? ''
+
+            return {...pokemonLeftJson, id, height, abilities, image}
+        }
+
+        const pokemonRight = async () => {
+            const pokemonRightRaw = await fetch(`https://pokeapi.co/api/v2/pokemon/${right}`)
+            const pokemonRightJson = await pokemonRightRaw.json()
+            const {id, height, abilities} = pokemonRightJson
+            const image = pokemonRightJson.sprites?.front_default ?? ''
+    
+            return {...pokemonRightJson, id, height, abilities, image}
+        }
+
+        const leftInfo = await pokemonLeft()
+        const rightInfo = await pokemonRight()
+        
+        res.status(200).json({left: leftInfo, right: rightInfo})
+    } catch {
+        res.sendStatus(500);
+    }
+});
+
+app.post("/fight/result", async (req, res) => {
+    const data = req.body
+
+    const {
+        leftPokemon,
+        rightPokemon
+    } = data
+
+    let rightHP = 30
+    let leftHP = 30
+    let fightIsOver = false
+    let history = []
+
+    const leftPokemonHit = () => {
+        const damage = Math.floor(Math.random() * 11)
+        console.log('damage', damage);
+        rightHP = rightHP - damage
+        history = [...history, {name: leftPokemon.name, damage: damage}]
+    }
+    
+    const rightPokemonHit = () => {
+        const damage = Math.floor(Math.random() * 11)
+        console.log('damage', damage);
+        leftHP = leftHP - damage
+        history = [...history, {name: rightPokemon.name, damage: damage}]
+    }
+
+    let rounds = 0
+    while (!fightIsOver) {
+        leftPokemonHit()
+        rightPokemonHit()
+        rounds++
+
+        if (leftHP <= 0 || rightHP <= 0) {
+            fightIsOver = true
+        }
+    }
+
+    let winner_pokemon_id
+    if (leftHP >= rightHP) {
+        winner_pokemon_id = leftPokemon.id
+    } else {
+        winner_pokemon_id = rightPokemon.id
+    }
+
+    try {
+        await db('fights').insert({
+            first_pokemon_id: leftPokemon.id,
+            second_pokemon_id: rightPokemon.id,
+            winner_pokemon_id,
+            rounds
+        });
+        res.status(200).json({message: 'Fight complete!', history: history});
+    } catch {
+        res.status(500).json({message: 'Fight failed', history: history});
+    }
+});
+
 app.get("/search", async (req, res) => {
     const {id, name} = req.query
 
