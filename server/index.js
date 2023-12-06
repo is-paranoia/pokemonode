@@ -5,14 +5,20 @@ import redis from 'redis';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 
-const REDIS = redis.createClient({
-    socket: {
-        host: 'redis',
-        port: process.env.REDIS_PORT
-    }
-});
-REDIS.on('error', (err) => console.log('Redis Client Error', err));
-await REDIS.connect();
+// const REDIS = redis.createClient({
+//     socket: {
+//         host: 'redis',
+//         port: process.env.REDIS_PORT
+//     }
+// });
+// REDIS.on('error', (err) => console.log('Redis Client Error', err));
+
+// const connectRedis = async () => {
+//     await REDIS.connect();
+// }
+
+// connectRedis()
+
 
 import knex from 'knex';
 import configs from './knexfile.js';
@@ -281,3 +287,5 @@ app.listen(port, () => {
   console.log(`Listening on port ${port}...`);
   console.log(`Redis Port ${process.env.REDIS_PORT}!`);
 });
+
+export default app;
