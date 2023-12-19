@@ -1,3 +1,4 @@
+import React from 'react';
 import { Card, CardActionArea, CardContent, CardHeader, CardMedia } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -32,6 +33,7 @@ const PokemonCard = (props) => {
             />
             <CardContent sx={{fontSize: '12px'}}>
                 <div>Height: {height}</div>
+                <div></div>
                 <div>Abilities:</div>
                 {abilities.map((item) => {
                     const {ability, slot} = item

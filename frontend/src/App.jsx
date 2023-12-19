@@ -9,9 +9,9 @@ const App = () => {
 
   return (
     <Provider authStore={authStore}>
-      <div className="app">
-        <Header />
-        <BrowserRouter>
+       <BrowserRouter>
+        <div className="app">
+          <Header />
           <Routes>
             <Route path="/" element={<PokemonsList />} />
             <Route path="/login" element={<LoginPage />} />
@@ -19,8 +19,8 @@ const App = () => {
             <Route path="/pokemon/:id" element={<PokemonPage />} />
             <Route path="/fight/:pokemonId" element={<FightPage />} />
           </Routes>
-        </BrowserRouter>
-      </div>
+        </div>
+      </BrowserRouter>
     </Provider>
   )
 }

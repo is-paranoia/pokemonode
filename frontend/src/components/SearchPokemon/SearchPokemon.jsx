@@ -1,7 +1,9 @@
 import { TextField } from "@mui/material";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const SearchPokemon = (props) => {
+    const navigate = useNavigate()
     const {searchedPokemons} = props;
 
     const [isLoading, setIsLoading] = useState(true);
@@ -15,8 +17,11 @@ const SearchPokemon = (props) => {
         fetch(`http://localhost:8080/search?name=${searchText}`)
         .then((response) => response.json())
         .then((result) => {
-          console.log('SEARCH', result);
-          setIsLoading(false)
+          if (result.id) {
+            console.log('SEARCH', result);
+            navigate(`./pokemon/${result.id}`)
+            setIsLoading(false)
+          }
         })
       } catch {
         console.log('error fetch');
