@@ -2,6 +2,7 @@ import { useForm } from "react-hook-form"
 import { observer } from 'mobx-react-lite';
 import authStore from '@stores/AuthStore';
 import './LoginPage.css'
+import { useNavigate } from "react-router-dom";
 
 const LoginPage = () => {
   const {
@@ -9,6 +10,8 @@ const LoginPage = () => {
     handleSubmit,
     formState: { errors },
   } = useForm()
+
+  const navigate = useNavigate();
 
 
   const onSubmit = (data) => {
@@ -23,6 +26,7 @@ const LoginPage = () => {
     .then((result) => {
       console.log('login result', result);
       result?.token && authStore.login(result);
+      result?.token && navigate('/');
       console.log('login result2', result);
     })
   }
@@ -32,6 +36,7 @@ const LoginPage = () => {
       <form onSubmit={handleSubmit(onSubmit)}>
         <input placeholder="Введите имя..." {...register("name", { required: true })} />
         <input placeholder="Введите пароль..." {...register("password", { required: true })} />
+        <input placeholder="Введите 2FA-код..." {...register("code", { required: true })} />
         {errors.exampleRequired && <span>This field is required</span>}
         <input type="submit" />
       </form>

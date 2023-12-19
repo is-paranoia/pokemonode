@@ -1,3 +1,5 @@
+import 'dotenv/config';
+
 const connection = {
   port: process.env.DB_PORT,
   host: 'postgres',

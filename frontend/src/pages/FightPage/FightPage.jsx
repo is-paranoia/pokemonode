@@ -28,7 +28,7 @@ const FightPage = () => {
     setIsLoading(true);
 
     try {
-        const rightPokemonId = 1
+        const rightPokemonId = Math.floor(Math.random()*101)
         fetch(`http://localhost:8080/fight?left=${params.pokemonId}&right=${rightPokemonId}`)
         .then((response) => response.json())
         .then((result) => {

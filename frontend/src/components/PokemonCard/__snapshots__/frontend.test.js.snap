@@ -1,0 +1,107 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders correctly 1`] = `
+[
+  <style
+    dangerouslySetInnerHTML={
+      {
+        "__html": ".css-sjkm0g-MuiCard-root{overflow:hidden;width:200px;height:350px;}",
+      }
+    }
+    data-emotion="css sjkm0g-MuiCard-root"
+  />,
+  <style
+    dangerouslySetInnerHTML={
+      {
+        "__html": ".css-jscxnd-MuiPaper-root-MuiCard-root{background-color:#fff;color:rgba(0, 0, 0, 0.87);-webkit-transition:box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;transition:box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;border-radius:4px;box-shadow:0px 2px 1px -1px rgba(0,0,0,0.2),0px 1px 1px 0px rgba(0,0,0,0.14),0px 1px 3px 0px rgba(0,0,0,0.12);overflow:hidden;width:200px;height:350px;}",
+      }
+    }
+    data-emotion="css jscxnd-MuiPaper-root-MuiCard-root"
+  />,
+  <div
+    className="MuiPaper-root MuiPaper-elevation MuiPaper-rounded MuiPaper-elevation1 MuiCard-root css-jscxnd-MuiPaper-root-MuiCard-root"
+    onClick={[Function]}
+  >
+    <style
+      dangerouslySetInnerHTML={
+        {
+          "__html": ".css-185gdzj-MuiCardHeader-root{display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex;-webkit-align-items:center;-webkit-box-align:center;-ms-flex-align:center;align-items:center;padding:16px;}",
+        }
+      }
+      data-emotion="css 185gdzj-MuiCardHeader-root"
+    />
+    <div
+      className="MuiCardHeader-root css-185gdzj-MuiCardHeader-root"
+    >
+      <style
+        dangerouslySetInnerHTML={
+          {
+            "__html": ".css-1qbkelo-MuiCardHeader-content{-webkit-flex:1 1 auto;-ms-flex:1 1 auto;flex:1 1 auto;}",
+          }
+        }
+        data-emotion="css 1qbkelo-MuiCardHeader-content"
+      />
+      <div
+        className="MuiCardHeader-content css-1qbkelo-MuiCardHeader-content"
+      >
+        <style
+          dangerouslySetInnerHTML={
+            {
+              "__html": ".css-1qvr50w-MuiTypography-root{margin:0;font-family:"Roboto","Helvetica","Arial",sans-serif;font-weight:400;font-size:1.5rem;line-height:1.334;letter-spacing:0em;display:block;}",
+            }
+          }
+          data-emotion="css 1qvr50w-MuiTypography-root"
+        />
+        <span
+          className="MuiTypography-root MuiTypography-h5 MuiCardHeader-title css-1qvr50w-MuiTypography-root"
+        >
+          Aboba
+        </span>
+      </div>
+    </div>
+    <style
+      dangerouslySetInnerHTML={
+        {
+          "__html": ".css-1hymwtd-MuiCardMedia-root{display:block;-webkit-background-size:cover;background-size:cover;background-repeat:no-repeat;-webkit-background-position:center;background-position:center;width:100%;object-fit:cover;border:1px solid black;}",
+        }
+      }
+      data-emotion="css 1hymwtd-MuiCardMedia-root"
+    />
+    <img
+      className="MuiCardMedia-root MuiCardMedia-media MuiCardMedia-img css-1hymwtd-MuiCardMedia-root"
+      height="180"
+      src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/14.png"
+    />
+    <style
+      dangerouslySetInnerHTML={
+        {
+          "__html": ".css-ppp0ym-MuiCardContent-root{padding:16px;font-size:12px;}.css-ppp0ym-MuiCardContent-root:last-child{padding-bottom:24px;}",
+        }
+      }
+      data-emotion="css ppp0ym-MuiCardContent-root"
+    />
+    <div
+      className="MuiCardContent-root css-ppp0ym-MuiCardContent-root"
+    >
+      <div>
+        Height: 
+        123
+      </div>
+      <div>
+        Abilities:
+      </div>
+      <div
+        style={
+          {
+            "marginLeft": "12px",
+          }
+        }
+      >
+        lolkek
+         
+        (3)
+      </div>
+    </div>
+  </div>,
+]
+`;
