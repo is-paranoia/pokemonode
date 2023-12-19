@@ -4,6 +4,7 @@ import cors from "cors";
 import redis from 'redis';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
+import { authenticator } from 'otplib';
 
 // const REDIS = redis.createClient({
 //     socket: {
@@ -18,7 +19,6 @@ import bcrypt from 'bcryptjs';
 // }
 
 // connectRedis()
-
 
 import knex from 'knex';
 import configs from './knexfile.js';
@@ -231,18 +231,20 @@ app.post("/register", async (req, res) => {
         if (name && email && password) {
             const hashedPassword = await bcrypt.hash(password, 10);
             const token = jwt.sign({name, hashedPassword}, process.env.SECRET);
-            
+            const secret2fa = authenticator.generateSecret();
             console.log('data', data);
             console.log('hashedPassword', hashedPassword);
             console.log('jwt', token);
-
+            
             // Insert user into the database
             await db('users').insert({
                 name,
                 email,
-                password: hashedPassword
+                password: hashedPassword,
+                secret2fa
             });
-            res.status(201).json({message: 'Registered', registered: true});
+
+            res.status(201).json({message: 'Registered', registered: true, secret2fa});
         }
     } catch {
         res.status(500).json({message: 'Registration failed', registered: false});
@@ -253,7 +255,8 @@ app.post("/login", async (req, res) => {
     const data = req.body
     const {
         name,
-        password
+        password,
+        code
     } = data
 
     try {
@@ -273,6 +276,12 @@ app.post("/login", async (req, res) => {
         return res.status(401).json({ message: 'Invalid username or password' });
       }
   
+      const token2fa = authenticator.generate(user.secret2fa);
+      const isValid = token2fa == code
+
+      if (!isValid) {
+        return res.status(401).json({ message: 'Invalid 2FA' });
+      }
       // Passwords match, user is authenticated
       const {id} = user;
       const token = jwt.sign({id, name}, process.env.SECRET, {expiresIn: '1h'});
@@ -282,6 +291,53 @@ app.post("/login", async (req, res) => {
       res.status(500).json({message: 'Internal Server Error'});
     }
 });
+
+app.get("/otpgen", async (req, res) => {
+    //const secret = 'lol';
+    // Alternative:
+    const secret = authenticator.generateSecret(); //'OVDRCJKJHRCDW323'
+    //OVDRCJKJHRCDW323
+    // Note: .generateSecret() is only available for authenticator and not totp/hotp
+    const token = authenticator.generate(secret);
+    console.log('token', token);
+    console.log('secret', secret);
+     
+    try {
+      const isValid = authenticator.check(token, secret);
+      console.log('isValid', isValid);
+      res.status(200).json({message: 'created', token, secret, isValid});
+      // or
+      //const isValid = authenticator.verify({ token, secret });
+    } catch (err) {
+      // Possible errors
+      // - options validation
+      // - "Invalid input - it is not base32 encoded string" (if thiry-two is used)
+      console.error(err);
+    }
+});
+
+app.post("/submit2fa", async (req, res) => {
+    const data = req.body
+    const {
+        email,
+        code
+    } = data
+
+    console.log('recieve 2fa', email, code);
+    try {
+      const user = await db('users').where({email}).first();
+      console.log('user', user);
+      const token = authenticator.generate(user.secret2fa);
+      const isValid = token == code
+
+      
+      console.log('usertoken', token);
+      console.log('isValid', isValid);
+      res.status(200).json({message: '2FA confirmed', confirmed: isValid});
+    } catch (error) {
+      res.status(500).json({message: 'Internal Server Error'});
+    }
+})
 
 app.listen(port, () => {
   console.log(`Listening on port ${port}...`);
